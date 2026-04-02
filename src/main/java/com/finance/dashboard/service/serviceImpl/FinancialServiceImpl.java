@@ -3,6 +3,7 @@ package com.finance.dashboard.service.serviceImpl;
 import com.finance.dashboard.entity.FinancialRecord;
 import com.finance.dashboard.enums.Category;
 import com.finance.dashboard.enums.RecordType;
+import com.finance.dashboard.exception.ResourceNotFound;
 import com.finance.dashboard.repository.FinancialRecordRepository;
 import com.finance.dashboard.service.FinancialService;
 import org.springframework.stereotype.Service;
@@ -33,13 +34,13 @@ public class FinancialServiceImpl implements FinancialService {
     @Override
     public FinancialRecord getRecordById(Long id) {
             return financialRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Financial record not found with id: " + id));
+                    .orElseThrow(() -> new ResourceNotFound("Record not found with id: " + id));
     }
 
     @Override
     public FinancialRecord updateRecord(Long id, FinancialRecord updatedRecord) {
         FinancialRecord record = financialRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Financial record not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFound("Record not found with id: " + id));
 
         record.setAmount(updatedRecord.getAmount());
         record.setType(updatedRecord.getType());
@@ -77,7 +78,7 @@ public class FinancialServiceImpl implements FinancialService {
     public void deleteRecord(Long id) {
 
         FinancialRecord record = financialRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Financial record not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFound("Record not found with id: " + id));
         financialRecordRepository.delete(record);
     }
 }
