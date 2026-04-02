@@ -29,9 +29,9 @@ public class FinancialRecord {
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User createdBy;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User createdBy;
 
 
     // Constructors, getters and setters
@@ -40,14 +40,13 @@ public class FinancialRecord {
     public FinancialRecord() {
     }
 
-    public FinancialRecord(Long id, Double amount, RecordType type, Category category, String description, LocalDate date, User createdBy) {
+    public FinancialRecord(Long id, Double amount, RecordType type, Category category, String description, LocalDate date) {
         this.id = id;
         this.amount = amount;
         this.type = type;
         this.category = category;
         this.description = description;
         this.date = date;
-        this.createdBy = createdBy;
     }
 
     public Long getId() {
@@ -96,13 +95,5 @@ public class FinancialRecord {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 }
