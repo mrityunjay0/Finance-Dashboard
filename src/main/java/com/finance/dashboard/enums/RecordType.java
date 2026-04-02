@@ -1,6 +1,6 @@
 package com.finance.dashboard.enums;
 
-public enum Type {
+public enum RecordType {
     INCOME,
     EXPENSE
 }
