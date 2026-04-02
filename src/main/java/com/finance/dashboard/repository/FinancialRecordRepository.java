@@ -12,10 +12,10 @@ import java.util.List;
 public interface FinancialRecordRepository extends JpaRepository<FinancialRecord, Long> {
 
     List<FinancialRecord> findByType(RecordType type);
-    List<FinancialRecord> findByCagtegory(Category category);
-    List<FinancialRecord> findByDateRange(LocalDate start, LocalDate end);
+    List<FinancialRecord> findByCategory(Category category);
+    List<FinancialRecord> findByDateBetween(LocalDate start, LocalDate end);
 
-    List<FinancialRecord> findByTypeCategoryDate(
+    List<FinancialRecord> findByTypeAndCategoryAndDateBetween(
             RecordType type,
             Category category,
             LocalDate start,
@@ -31,7 +31,6 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
 //    @Query("SELECT r.category, SUM(r.amount) FROM FinancialRecord r GROUP BY r.category")
 //    List<Object[]> getCategoryTotals();
 
-    @Query("SELECT r FROM FinancialRecord r ORDER BY r.date DESC")
     List<FinancialRecord> findTop5ByOrderByDateDesc();
 
     @Query("SELECT MONTH(r.date), SUM(r.amount) FROM FinancialRecord r GROUP BY MONTH(r.date)")
@@ -41,11 +40,6 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
             "FROM FinancialRecord r " +
             "GROUP BY r.category, r.type")
     List<Object[]> getCategoryTotalsByType();
-
-    @Query("SELECT MONTH(r.date), r.type, SUM(r.amount) " +
-            "FROM FinancialRecord r " +
-            "GROUP BY MONTH(r.date), r.type")
-    List<Object[]> getMonthlyTrendsByType();
 
     @Query("SELECT MONTH(r.date), r.type, SUM(r.amount) " +
             "FROM FinancialRecord r " +

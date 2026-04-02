@@ -55,7 +55,7 @@ public class FinancialServiceImpl implements FinancialService {
     public List<FinancialRecord> filterRecords(RecordType type, Category category, LocalDate startDate, LocalDate endDate) {
 
         if (type != null && category != null && startDate != null && endDate != null) {
-            return financialRecordRepository.findByTypeCategoryDate(type, category, startDate, endDate);
+            return financialRecordRepository.findByTypeAndCategoryAndDateBetween(type, category, startDate, endDate);
         }
 
         if (type != null) {
@@ -63,11 +63,11 @@ public class FinancialServiceImpl implements FinancialService {
         }
 
         if (category != null) {
-            return financialRecordRepository.findByCagtegory(category);
+            return financialRecordRepository.findByCategory(category);
         }
 
         if (startDate != null && endDate != null) {
-            return financialRecordRepository.findByDateRange(startDate, endDate);
+            return financialRecordRepository.findByDateBetween(startDate, endDate);
         }
 
         return financialRecordRepository.findAll();
