@@ -4,7 +4,7 @@ import com.finance.dashboard.enums.Category;
 import com.finance.dashboard.enums.RecordType;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "financial_records")
@@ -27,7 +27,7 @@ public class FinancialRecord {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
