@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard | Insights & Analytics</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-vault"></i>
+            <span>FINANCE</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="user-block">
+            <!-- Sidebar footer/user area can go here -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header animate-in">
+            <div class="welcome">
+                <h1>Overview</h1>
+                <p class="text-muted">Welcome back! Here's what's happening today.</p>
+            </div>
+            
+            <div class="header-actions">
+                <button class="btn-primary" onclick="openModal()">
+                    <i class="fa-solid fa-plus"></i> Add Record
+                </button>
+            </div>
+        </header>
+
+        <!-- Stat Cards -->
+        <div class="dashboard-grid animate-in" style="animation-delay: 0.1s;">
+            <div class="stat-card net-balance">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                </div>
+                <div class="stat-value" id="net-balance">₹0.00</div>
+                <div class="stat-label">Net Balance</div>
+            </div>
+            
+            <div class="stat-card total-income">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-arrow-up"></i></div>
+                </div>
+                <div class="stat-value" id="total-income">₹0.00</div>
+                <div class="stat-label">Total Income</div>
+            </div>
+            
+            <div class="stat-card total-expense">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-arrow-down"></i></div>
+                </div>
+                <div class="stat-value" id="total-expense">₹0.00</div>
+                <div class="stat-label">Total Expenses</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+                </div>
+                <div class="stat-value">₹45,200</div>
+                <div class="stat-label">Savings Goal</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid animate-in" style="animation-delay: 0.2s;">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Income vs Expenses</h3>
+                    <div class="chart-actions">
+                        <select class="form-input" style="padding: 0.25rem 0.5rem; width: auto;">
+                            <option>Last 6 Months</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Spending by Category</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="table-card animate-in" style="animation-delay: 0.3s;">
+            <div class="table-header">
+                <h3 class="chart-title">Recent Activity</h3>
+                <a href="#" class="nav-link" style="padding: 0;">View All</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-activity-body">
+                    <!-- Data will be injected here via dashboard.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="chart-header" style="margin-bottom: 2rem;">
+                <h3 class="chart-title">New Transaction</h3>
+                <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.25rem;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="amount" class="form-input" placeholder="0.00" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="type" class="form-input" required>
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category" class="form-input" required>
+                        <option value="SALARY">Salary</option>
+                        <option value="FOOD">Food & Dining</option>
+                        <option value="SHOPPING">Shopping</option>
+                        <option value="HOUSING">Housing</option>
+                        <option value="TRANSPORT">Transport</option>
+                        <option value="ENTERTAINMENT">Entertainment</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="date" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="description" class="form-input" placeholder="e.g. Monthly Rent">
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.875rem;">
+                    Add Transaction
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Dashboard Logic -->
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
