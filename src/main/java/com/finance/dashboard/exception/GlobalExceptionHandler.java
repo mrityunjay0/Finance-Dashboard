@@ -23,9 +23,11 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
-                request.getRequestURI()
+                "NOT_FOUND",
+                request.getRequestURI(),
+                ex.getMessage()
         );
+
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -38,24 +40,28 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                request.getRequestURI()
+                "BAD_REQUEST",
+                request.getRequestURI(),
+                ex.getMessage()
         );
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     // Access Denied
-    @ExceptionHandler(AccessDenied.class)
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(
-            AccessDenied ex,
+            org.springframework.security.access.AccessDeniedException ex,
             HttpServletRequest request
     ) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.FORBIDDEN.value(),
-                ex.getMessage(),
-                request.getRequestURI()
+                "FORBIDDEN",
+                request.getRequestURI(),
+                "Access Denied"
         );
+
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
@@ -70,13 +76,14 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", ")); // 🔥 multiple errors
+                .collect(Collectors.joining(", "));
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                message,
-                request.getRequestURI()
+                "VALIDATION_ERROR",
+                request.getRequestURI(),
+                message
         );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -97,8 +104,9 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                message,
-                request.getRequestURI()
+                "CONSTRAINT_VIOLATION",
+                request.getRequestURI(),
+                message
         );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -113,8 +121,9 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Something went wrong",
-                request.getRequestURI()
+                "INTERNAL_SERVER_ERROR",
+                request.getRequestURI(),
+                "Something went wrong"
         );
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
