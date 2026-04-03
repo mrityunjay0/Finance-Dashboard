@@ -5,6 +5,7 @@ import com.finance.dashboard.dto.MonthlyTrendResponse;
 import com.finance.dashboard.dto.RecentActivityResponse;
 import com.finance.dashboard.dto.SummaryResponse;
 import com.finance.dashboard.service.DashboardService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,22 +23,22 @@ public class DashboardController {
     }
 
     @GetMapping("/summary")
-    public SummaryResponse getSummary() {
-        return dashboardService.getSummary();
+    public ResponseEntity<SummaryResponse> getSummary() {
+        return ResponseEntity.ok(dashboardService.getSummary());
     }
 
     @GetMapping("/category-total")
-    public List<CategoryResponse> getCategoryTotal() {
-        return dashboardService.getCategoryTotal();
+    public ResponseEntity<List<CategoryResponse>> getCategoryTotal() {
+        return ResponseEntity.ok(dashboardService.getCategoryTotal());
     }
 
     @GetMapping("/monthly-trends")
-    public List<MonthlyTrendResponse> getMonthlyTrends() {
-        return dashboardService.getMonthlyTrends();
+    public ResponseEntity<List<MonthlyTrendResponse>> getMonthlyTrends() {
+        return ResponseEntity.ok(dashboardService.getMonthlyTrends());
     }
 
     @GetMapping("/recent-activity")
-    public List<?> getRecentActivity() {
-        return dashboardService.getRecentActivity();
+    public ResponseEntity<List<RecentActivityResponse>> getRecentActivity() {
+        return ResponseEntity.ok(dashboardService.getRecentActivity());
     }
 }
