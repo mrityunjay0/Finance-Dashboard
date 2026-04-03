@@ -1,5 +1,6 @@
 package com.finance.dashboard.controller;
 
+import com.finance.dashboard.dto.UserRequest;
 import com.finance.dashboard.entity.User;
 import com.finance.dashboard.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,11 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody UserRequest userRequest) {
+        User user = new User();
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
         return userService.createUser(user);
     }
 

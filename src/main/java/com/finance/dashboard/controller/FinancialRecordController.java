@@ -1,5 +1,6 @@
 package com.finance.dashboard.controller;
 
+import com.finance.dashboard.dto.FinancialRecordRequest;
 import com.finance.dashboard.entity.FinancialRecord;
 import com.finance.dashboard.enums.Category;
 import com.finance.dashboard.enums.RecordType;
@@ -21,7 +22,13 @@ public class FinancialRecordController {
 
 
     @PostMapping("/create")
-    public FinancialRecord createRecord(@RequestBody FinancialRecord record) {
+    public FinancialRecord createRecord(@RequestBody FinancialRecordRequest financialRecordRequest) {
+        FinancialRecord record = new FinancialRecord();
+        record.setAmount(financialRecordRequest.getAmount());
+        record.setType(financialRecordRequest.getType());
+        record.setCategory(financialRecordRequest.getCategory());
+        record.setDescription(financialRecordRequest.getDescription());
+        record.setDate(financialRecordRequest.getDate());
         return financialService.createRecord(record);
     }
 
