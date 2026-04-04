@@ -2,17 +2,13 @@ package com.finance.dashboard.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -26,6 +22,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/analyst/**").hasRole("ANALYST")
+                        .requestMatchers("/viewer/**").hasRole("VIEWER")
 
                         .requestMatchers("/dashboard/**")
                         .hasAnyRole("VIEWER", "ANALYST", "ADMIN")
@@ -44,9 +44,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // 🔥 FORM LOGIN (Correct placement)
                 .formLogin(form -> form
-                        .loginPage("/login")          // your custom login page
+                        .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
@@ -54,9 +53,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                )
-
-                .httpBasic(Customizer.withDefaults());
+                );
 
         return http.build();
     }
