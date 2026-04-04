@@ -36,6 +36,12 @@ function formatDate(dateString) {
     });
 }
 
+function getMonthName(monthNumber) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+    return date.toLocaleString('en-IN', { month: 'short' });
+}
+
 // Navigation & Persistence
 function showSection(sectionId) {
     const sections = ['section-transactions', 'section-users'];
@@ -101,6 +107,69 @@ async function loadSummary() {
         if (elements.income) elements.income.innerText = formatCurrency(data.totalIncome);
         if (elements.expense) elements.expense.innerText = formatCurrency(data.totalExpense);
     } catch (e) { console.error("Summary load error", e); }
+}
+
+async function loadCategoryDistribution() {
+    try {
+        const data = await fetch('/dashboard/category-total').then(handleResponse);
+        const container = document.getElementById('category-list');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!data.length) {
+            container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No data</p>';
+            return;
+        }
+
+        const maxVal = Math.max(...data.flatMap(c => [c.totalIncome || 0, c.totalExpense || 0]), 1);
+        data.forEach(cat => {
+            const incPerc = (cat.totalIncome / maxVal) * 100;
+            const expPerc = (cat.totalExpense / maxVal) * 100;
+            const item = document.createElement('div');
+            item.className = 'category-item';
+            item.innerHTML = `
+                <div class="category-header"><span style="font-weight: 600;">${cat.category}</span></div>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; height: 12px;">
+                        <div class="progress-container" style="flex-grow: 1; height: 6px;">
+                            <div class="progress-bar" style="width: ${incPerc}%; background: var(--success);"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--success); min-width: 60px; text-align: right;">${formatCurrency(cat.totalIncome)}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; height: 12px;">
+                        <div class="progress-container" style="flex-grow: 1; height: 6px;">
+                            <div class="progress-bar" style="width: ${expPerc}%; background: var(--danger);"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--danger); min-width: 60px; text-align: right;">${formatCurrency(cat.totalExpense)}</span>
+                    </div>
+                </div>`;
+            container.appendChild(item);
+        });
+    } catch (e) {}
+}
+
+async function loadMonthlyTrends() {
+    try {
+        const data = await fetch('/dashboard/monthly-trends').then(handleResponse);
+        const container = document.getElementById('trends-list');
+        if (!container) return;
+        container.innerHTML = '';
+        if (!data.length) return;
+
+        const maxVal = Math.max(...data.flatMap(d => [d.totalIncome || 0, d.totalExpense || 0]), 1);
+        data.forEach(m => {
+            const incP = (m.totalIncome / maxVal) * 100;
+            const expP = (m.totalExpense / maxVal) * 100;
+            const item = document.createElement('div');
+            item.className = 'trend-item';
+            item.innerHTML = `
+                <div class="trend-month">${getMonthName(m.month)}</div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div class="mini-bar mini-bar-income" style="width: ${incP}%"></div><span style="font-size: 0.75rem; color: var(--success); font-weight: 500;">${formatCurrency(m.totalIncome)}</span></div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div class="mini-bar mini-bar-expense" style="width: ${expP}%"></div><span style="font-size: 0.75rem; color: var(--danger); font-weight: 500;">${formatCurrency(m.totalExpense)}</span></div>
+                </div>`;
+            container.appendChild(item);
+        });
+    } catch (e) {}
 }
 
 async function applyFilters() {
@@ -277,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
     checkFlashMessage();
     restoreSection();
     loadSummary();
+    loadCategoryDistribution();
+    loadMonthlyTrends();
     applyFilters();
     loadUsers();
 });
