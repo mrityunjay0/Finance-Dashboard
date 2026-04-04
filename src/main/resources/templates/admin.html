@@ -28,8 +28,8 @@
             <p style="color: var(--text-secondary);">Manage financial records and system users.</p>
         </div>
         <div style="display: flex; gap: 0.5rem;">
-            <button onclick="showSection('transactions')">Transactions</button>
-            <button onclick="showSection('users')" class="secondary">Users</button>
+            <button id="btn-transactions" onclick="showSection('transactions')">Transactions</button>
+            <button id="btn-users" onclick="showSection('users')" class="secondary">Users</button>
         </div>
     </header>
 
@@ -74,7 +74,15 @@
                 <div class="grid">
                     <div class="card stat-card">
                         <span class="stat-label">System Balance</span>
-                        <div class="stat-value" id="balance">$0.00</div>
+                        <div class="stat-value" id="balance">₹0</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="stat-label">Total Income</span>
+                        <div class="stat-value" style="color: var(--success);" id="total-income">₹0</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="stat-label">Total Expense</span>
+                        <div class="stat-value" style="color: var(--danger);" id="total-expenses">₹0</div>
                     </div>
                 </div>
                 
@@ -128,24 +136,42 @@
 
     <!-- Users Section -->
     <div id="section-users" style="display: none;">
-        <div class="card">
-            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">System Users</h3>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th style="text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="users-table">
-                        <!-- Loaded via JS -->
-                    </tbody>
-                </table>
+        <div class="grid" style="margin-bottom: 2.5rem;">
+            <!-- Create User Card -->
+            <div class="card" style="grid-column: span 1;">
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Register New User</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Full Name</label>
+                    <input type="text" id="reg-user-name" placeholder="Name" style="margin-bottom: 0.5rem;">
+                    
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Email</label>
+                    <input type="email" id="reg-user-email" placeholder="Email" style="margin-bottom: 0.5rem;">
+
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Password</label>
+                    <input type="password" id="reg-user-password" placeholder="Password" style="margin-bottom: 1rem;">
+
+                    <button onclick="createUser()">Create User</button>
+                </div>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="card" style="grid-column: span 2;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">System Users</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name / Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

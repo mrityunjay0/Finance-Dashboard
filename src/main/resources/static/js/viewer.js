@@ -1,34 +1,75 @@
+// Global error handler for debugging
+window.onerror = function(msg, url, line, col, error) {
+    console.error("Global JS Error:", msg, "at", url, ":", line);
+    return false;
+};
+
+// Handle Fetch Responses centrally to show backend errors
+async function handleResponse(response) {
+    if (!response.ok) {
+        let errorMessage = "An error occurred";
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+            errorMessage = response.statusText || errorMessage;
+        }
+        alert("Error: " + errorMessage);
+        throw new Error(errorMessage);
+    }
+    // Handle empty responses (like 204 No Content)
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+        return null;
+    }
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return response.json();
+    }
+    return null;
+}
+
 const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
         style: 'currency',
-        currency: 'USD',
-    }).format(amount);
+        currency: 'INR',
+    }).format(amount || 0);
 };
 
 const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-    });
+    if (!dateString) return "";
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-IN', {
+            month: 'short', day: 'numeric', year: 'numeric'
+        });
+    } catch (e) { return dateString; }
+};
+
+const getMonthName = (monthNumber) => {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+    return date.toLocaleString('en-IN', { month: 'short' });
 };
 
 async function loadSummary() {
     try {
-        const res = await fetch('/dashboard/summary');
-        const data = await res.json();
-        document.getElementById('balance').innerText = formatCurrency(data.netBalance);
-        document.getElementById('total-income').innerText = formatCurrency(data.totalIncome);
-        document.getElementById('total-expenses').innerText = formatCurrency(data.totalExpense);
+        const data = await fetch('/dashboard/summary').then(handleResponse);
+        
+        const balanceEl = document.getElementById('balance');
+        const incomeEl = document.getElementById('total-income');
+        const expenseEl = document.getElementById('total-expenses');
+
+        if (balanceEl) balanceEl.innerText = formatCurrency(data.netBalance);
+        if (incomeEl) incomeEl.innerText = formatCurrency(data.totalIncome);
+        if (expenseEl) expenseEl.innerText = formatCurrency(data.totalExpense);
     } catch (e) { console.error("Summary load error", e); }
 }
 
 async function loadRecentActivity() {
     try {
-        const res = await fetch('/dashboard/recent-activity');
-        const data = await res.json();
+        const data = await fetch('/dashboard/recent-activity').then(handleResponse);
         const tableBody = document.getElementById('activity-table');
+        if (!tableBody) return;
         tableBody.innerHTML = '';
 
         data.forEach(item => {
@@ -46,9 +87,9 @@ async function loadRecentActivity() {
 
 async function loadCategoryDistribution() {
     try {
-        const res = await fetch('/dashboard/category-total');
-        const data = await res.json();
+        const data = await fetch('/dashboard/category-total').then(handleResponse);
         const container = document.getElementById('category-list');
+        if (!container) return;
         container.innerHTML = '';
 
         if (data.length === 0) {
@@ -56,20 +97,32 @@ async function loadCategoryDistribution() {
             return;
         }
 
-        // Find max amount to calculate percentage bars
-        const maxAmount = Math.max(...data.map(c => c.totalAmount));
+        // Find max amount across all categories for bar scaling
+        const maxVal = Math.max(...data.flatMap(c => [c.totalIncome || 0, c.totalExpense || 0]), 1);
 
         data.forEach(cat => {
-            const percentage = (cat.totalAmount / maxAmount) * 100;
+            const incPerc = (cat.totalIncome / maxVal) * 100;
+            const expPerc = (cat.totalExpense / maxVal) * 100;
+            
             const item = document.createElement('div');
             item.className = 'category-item';
             item.innerHTML = `
                 <div class="category-header">
                     <span style="font-weight: 600;">${cat.category}</span>
-                    <span style="color: var(--text-secondary);">${formatCurrency(cat.totalAmount)}</span>
                 </div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: ${percentage}%"></div>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; height: 12px;">
+                        <div class="progress-container" style="flex-grow: 1; height: 6px;">
+                            <div class="progress-bar" style="width: ${incPerc}%; background: var(--success);"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--success); min-width: 60px; text-align: right;">${formatCurrency(cat.totalIncome)}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; height: 12px;">
+                        <div class="progress-container" style="flex-grow: 1; height: 6px;">
+                            <div class="progress-bar" style="width: ${expPerc}%; background: var(--danger);"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--danger); min-width: 60px; text-align: right;">${formatCurrency(cat.totalExpense)}</span>
+                    </div>
                 </div>
             `;
             container.appendChild(item);
@@ -79,9 +132,9 @@ async function loadCategoryDistribution() {
 
 async function loadMonthlyTrends() {
     try {
-        const res = await fetch('/dashboard/monthly-trends');
-        const data = await res.json();
+        const data = await fetch('/dashboard/monthly-trends').then(handleResponse);
         const container = document.getElementById('trends-list');
+        if (!container) return;
         container.innerHTML = '';
 
         if (data.length === 0) {
@@ -89,23 +142,26 @@ async function loadMonthlyTrends() {
             return;
         }
 
-        // Find max value across income and expense for bar scaling
-        const maxVal = Math.max(...data.flatMap(d => [d.income, d.expense]));
+        const maxVal = Math.max(...data.flatMap(d => [d.totalIncome || 0, d.totalExpense || 0]), 1);
 
-        data.forEach(month => {
-            const incPerc = (month.income / maxVal) * 100;
-            const expPerc = (month.expense / maxVal) * 100;
+        data.forEach(monthData => {
+            const incPerc = (monthData.totalIncome / maxVal) * 100;
+            const expPerc = (monthData.totalExpense / maxVal) * 100;
+            const monthName = getMonthName(monthData.month);
             
             const item = document.createElement('div');
             item.className = 'trend-item';
             item.innerHTML = `
-                <div class="trend-month">${month.month}</div>
-                <div class="trend-bars">
-                    <div class="mini-bar mini-bar-income" style="width: ${incPerc}%" title="Income: ${formatCurrency(month.income)}"></div>
-                    <div class="mini-bar mini-bar-expense" style="width: ${expPerc}%" title="Expense: ${formatCurrency(month.expense)}"></div>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); min-width: 60px; text-align: right;">
-                    ${formatCurrency(month.income - month.expense)}
+                <div class="trend-month">${monthName}</div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div class="mini-bar mini-bar-income" style="width: ${incPerc}%"></div>
+                        <span style="font-size: 0.75rem; color: var(--success); font-weight: 500;">${formatCurrency(monthData.totalIncome)}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div class="mini-bar mini-bar-expense" style="width: ${expPerc}%"></div>
+                        <span style="font-size: 0.75rem; color: var(--danger); font-weight: 500;">${formatCurrency(monthData.totalExpense)}</span>
+                    </div>
                 </div>
             `;
             container.appendChild(item);
@@ -114,6 +170,7 @@ async function loadMonthlyTrends() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Viewer Dashboard Initialized");
     loadSummary();
     loadRecentActivity();
     loadCategoryDistribution();
