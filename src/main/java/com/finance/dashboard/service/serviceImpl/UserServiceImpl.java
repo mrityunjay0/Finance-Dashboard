@@ -6,6 +6,7 @@ import com.finance.dashboard.enums.Status;
 import com.finance.dashboard.exception.ResourceNotFound;
 import com.finance.dashboard.repository.UserRepository;
 import com.finance.dashboard.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -40,6 +43,8 @@ public class UserServiceImpl implements UserService {
             user.setStatus(Status.ACTIVE);
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
@@ -61,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
-        user.setPassword(updatedUser.getPassword());
+        user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         user.setRole(updatedUser.getRole());
         user.setStatus(updatedUser.getStatus());
         return userRepository.save(user);
