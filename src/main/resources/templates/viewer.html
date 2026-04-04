@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Viewer Dashboard</title>
+    <title>Viewer</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h2>Viewer Dashboard</h2>
+<div class="navbar">
+    <h2>Viewer Dashboard</h2>
+    <form action="/logout" method="post"><button>Logout</button></form>
+</div>
 
-<button onclick="loadSummary()">View Summary</button>
+<div class="container">
 
-<pre id="output"></pre>
+    <div class="card">
+        <h3>Summary</h3>
+        <button onclick="loadSummary()">Load</button>
+
+        <p>Income: <span id="income"></span></p>
+        <p>Expense: <span id="expense"></span></p>
+        <p>Balance: <span id="balance"></span></p>
+    </div>
+
+</div>
 
 <script src="/js/viewer.js"></script>
-
 </body>
 </html>

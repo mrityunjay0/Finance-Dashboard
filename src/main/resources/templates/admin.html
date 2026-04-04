@@ -1,19 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+    <title>Admin</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
+<div class="navbar">
+    <h2>Admin Dashboard</h2>
+    <form action="/logout" method="post"><button>Logout</button></form>
+</div>
 
-<button onclick="loadSummary()">Load Summary</button>
-<button onclick="createRecord()">Create Record</button>
+<div class="container">
 
-<pre id="output"></pre>
+    <div class="card">
+        <h3>Create Record</h3>
+        <input id="amount" placeholder="Amount">
+        <input id="category" placeholder="Category">
+        <input id="date" type="date">
+        <input id="description" placeholder="Description">
+
+        <select id="type">
+            <option value="INCOME">INCOME</option>
+            <option value="EXPENSE">EXPENSE</option>
+        </select>
+
+        <button onclick="createRecord()">Create</button>
+    </div>
+
+    <div class="card">
+        <h3>Filter Records</h3>
+        <input id="startDate" type="date">
+        <input id="endDate" type="date">
+
+        <select id="filterType">
+            <option value="">ALL</option>
+            <option value="INCOME">INCOME</option>
+            <option value="EXPENSE">EXPENSE</option>
+        </select>
+
+        <button onclick="filterRecords()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th><th>Amount</th><th>Type</th><th>Category</th><th>Date</th><th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+
+</div>
 
 <script src="/js/admin.js"></script>
-
 </body>
 </html>

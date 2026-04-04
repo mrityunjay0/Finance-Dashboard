@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Analyst Dashboard</title>
+    <title>Analyst</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h2>Analyst Dashboard</h2>
+<div class="navbar">
+    <h2>Analyst Dashboard</h2>
+    <form action="/logout" method="post"><button>Logout</button></form>
+</div>
 
-<button onclick="loadSummary()">View Summary</button>
-<button onclick="loadRecords()">View Records</button>
+<div class="container">
 
-<pre id="output"></pre>
+    <div class="card">
+        <h3>Filter Records</h3>
+        <input id="startDate" type="date">
+        <input id="endDate" type="date">
+
+        <select id="filterType">
+            <option value="">ALL</option>
+            <option value="INCOME">INCOME</option>
+            <option value="EXPENSE">EXPENSE</option>
+        </select>
+
+        <button onclick="filterRecords()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th><th>Amount</th><th>Type</th><th>Category</th><th>Date</th>
+        </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+
+</div>
 
 <script src="/js/analyst.js"></script>
-
 </body>
 </html>

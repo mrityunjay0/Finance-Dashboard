@@ -1,5 +1,8 @@
-async function loadSummary() {
+async function loadSummary(){
     const res = await fetch('/dashboard/summary');
     const data = await res.json();
-    document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+
+    document.getElementById("income").innerText = data.totalIncome;
+    document.getElementById("expense").innerText = data.totalExpenses;
+    document.getElementById("balance").innerText = data.netBalance;
 }

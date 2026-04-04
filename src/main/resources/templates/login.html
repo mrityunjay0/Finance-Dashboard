@@ -1,73 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login | Finance Dashboard</title>
+    <title>Login</title>
     <link rel="stylesheet" href="/css/style.css">
-
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #111827;
-        }
-
-        .login-box {
-            background: white;
-            padding: 30px;
-            width: 320px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .login-box h2 {
-            margin-bottom: 20px;
-        }
-
-        .login-box input {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .login-box button {
-            width: 100%;
-        }
-
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-
-        .logout {
-            color: green;
-            margin-top: 10px;
-        }
-    </style>
 </head>
+<body class="center">
 
-<body>
-
-<div class="login-box">
-    <h2>Finance Login</h2>
+<div class="card">
+    <h2>Login</h2>
 
     <form method="post" action="/login">
-        <input type="text" name="username" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-
+        <input name="username" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
 
-    <!-- Error -->
-    <p class="error" th:if="${param.error}">
-        Invalid email or password
-    </p>
-
-    <!-- Logout message -->
-    <p class="logout" th:if="${param.logout}">
-        Logged out successfully
-    </p>
+    <p class="error" th:if="${param.error}">Invalid credentials</p>
 </div>
 
 </body>
