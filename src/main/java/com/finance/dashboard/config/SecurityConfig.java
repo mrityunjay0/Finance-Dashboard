@@ -21,14 +21,16 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(auth -> auth
 
+                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         .requestMatchers("/dashboard/**")
                         .hasAnyRole("VIEWER", "ANALYST", "ADMIN")
 
-                        .requestMatchers("/records/all", "/records/{id}", "/records/filter")
+                        .requestMatchers("/records/all", "/records/*", "/records/filter")
                         .hasAnyRole("ANALYST", "ADMIN")
 
                         .requestMatchers("/records/create",
@@ -41,6 +43,19 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
+
+                // 🔥 FORM LOGIN (Correct placement)
+                .formLogin(form -> form
+                        .loginPage("/login")          // your custom login page
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
+
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
