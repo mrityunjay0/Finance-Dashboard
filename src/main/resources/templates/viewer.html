@@ -1,29 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Viewer</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewer Dashboard | Finance</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<div class="navbar">
-    <h2>Viewer Dashboard</h2>
-    <form action="/logout" method="post"><button>Logout</button></form>
-</div>
+<nav class="navbar">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <h2>FINANCE.<span>OS</span></h2>
+        <span class="badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-primary);">Viewer Access</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <span style="color: var(--text-secondary); font-size: 0.875rem;" sec:authentication="name">User</span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="secondary">Logout</button>
+        </form>
+    </div>
+</nav>
 
 <div class="container">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Financial Overview</h1>
+        <p style="color: var(--text-secondary);">Real-time summary of your assets and transactions.</p>
+    </header>
 
-    <div class="card">
-        <h3>Summary</h3>
-        <button onclick="loadSummary()">Load</button>
-
-        <p>Income: <span id="income"></span></p>
-        <p>Expense: <span id="expense"></span></p>
-        <p>Balance: <span id="balance"></span></p>
+    <!-- Summary Grid -->
+    <div class="grid" style="margin-bottom: 2.5rem;">
+        <div class="card stat-card">
+            <span class="stat-label">Net Balance</span>
+            <div class="stat-value" id="balance">$0.00</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Updated just now</div>
+        </div>
+        <div class="card stat-card">
+            <span class="stat-label">Total Income</span>
+            <div class="stat-value" id="income" style="color: var(--success);">$0.00</div>
+            <div style="font-size: 0.75rem; color: var(--success);">+ March performance</div>
+        </div>
+        <div class="card stat-card">
+            <span class="stat-label">Total Expenses</span>
+            <div class="stat-value" id="expense" style="color: var(--danger);">$0.00</div>
+            <div style="font-size: 0.75rem; color: var(--danger);">- March performance</div>
+        </div>
     </div>
 
+    <!-- Recent Activity -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 600;">Recent Activity</h3>
+            <button onclick="loadDashboardData()" class="secondary" style="padding: 0.5rem 1rem; font-size: 0.75rem;">Refresh</button>
+        </div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th style="text-align: right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-activity-table">
+                    <!-- Loaded via JS -->
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 3rem;">Loading your activity...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<script src="/js/viewer.js"></script>
+<script th:src="@{/js/viewer.js}"></script>
 </body>
 </html>

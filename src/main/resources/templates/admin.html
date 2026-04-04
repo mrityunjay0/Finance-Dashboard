@@ -1,58 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Admin</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Finance</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<div class="navbar">
-    <h2>Admin Dashboard</h2>
-    <form action="/logout" method="post"><button>Logout</button></form>
-</div>
+<nav class="navbar">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <h2>FINANCE.<span>OS</span></h2>
+        <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">Admin Access</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <span style="color: var(--text-secondary); font-size: 0.875rem;" sec:authentication="name">Admin</span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="secondary">Logout</button>
+        </form>
+    </div>
+</nav>
 
 <div class="container">
+    <header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">System Administration</h1>
+            <p style="color: var(--text-secondary);">Manage financial records and system users.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button onclick="showSection('transactions')">Transactions</button>
+            <button onclick="showSection('users')" class="secondary">Users</button>
+        </div>
+    </header>
 
-    <div class="card">
-        <h3>Create Record</h3>
-        <input id="amount" placeholder="Amount">
-        <input id="category" placeholder="Category">
-        <input id="date" type="date">
-        <input id="description" placeholder="Description">
+    <!-- Transactions Section -->
+    <div id="section-transactions">
+        <div class="grid" style="margin-bottom: 2.5rem;">
+            <!-- Create Record Card -->
+            <div class="card" style="grid-column: span 1;">
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">New Transaction</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Amount</label>
+                    <input type="number" id="amount" placeholder="0.00" style="margin-bottom: 0.5rem;">
+                    
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Type</label>
+                    <select id="type" style="margin-bottom: 0.5rem;">
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
 
-        <select id="type">
-            <option value="INCOME">INCOME</option>
-            <option value="EXPENSE">EXPENSE</option>
-        </select>
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Category</label>
+                    <select id="category" style="margin-bottom: 0.5rem;">
+                        <option value="SALARY">Salary</option>
+                        <option value="INVESTMENT">Investment</option>
+                        <option value="FOOD">Food</option>
+                        <option value="TRANSPORTATION">Transportation</option>
+                        <option value="UTILITIES">Utilities</option>
+                        <option value="OTHER">Other</option>
+                    </select>
 
-        <button onclick="createRecord()">Create</button>
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Date</label>
+                    <input type="date" id="date" style="margin-bottom: 0.5rem;">
+
+                    <label style="font-size: 0.75rem; color: var(--text-secondary);">Description</label>
+                    <input type="text" id="description" placeholder="Short description" style="margin-bottom: 1rem;">
+
+                    <button onclick="createRecord()">Create Record</button>
+                </div>
+            </div>
+
+            <!-- Summary & Filter Card -->
+            <div style="grid-column: span 2; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="grid">
+                    <div class="card stat-card">
+                        <span class="stat-label">System Balance</span>
+                        <div class="stat-value" id="balance">$0.00</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Quick Filter</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary);">Type</label>
+                            <select id="filterType" style="margin: 0;">
+                                <option value="">All</option>
+                                <option value="INCOME">Income</option>
+                                <option value="EXPENSE">Expense</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary);">Start</label>
+                            <input type="date" id="startDate" style="margin: 0;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary);">End</label>
+                            <input type="date" id="endDate" style="margin: 0;">
+                        </div>
+                        <button onclick="applyFilters()">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Table -->
+        <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">All Transactions</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th style="text-align: right;">Amount</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-table">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Filter Records</h3>
-        <input id="startDate" type="date">
-        <input id="endDate" type="date">
-
-        <select id="filterType">
-            <option value="">ALL</option>
-            <option value="INCOME">INCOME</option>
-            <option value="EXPENSE">EXPENSE</option>
-        </select>
-
-        <button onclick="filterRecords()">Search</button>
+    <!-- Users Section (Hidden by default) -->
+    <div id="section-users" style="display: none;">
+        <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">System Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th><th>Amount</th><th>Type</th><th>Category</th><th>Date</th><th>Action</th>
-        </tr>
-        </thead>
-        <tbody id="table"></tbody>
-    </table>
-
 </div>
 
-<script src="/js/admin.js"></script>
+<script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

@@ -1,43 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Analyst</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyst Dashboard | Finance</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<div class="navbar">
-    <h2>Analyst Dashboard</h2>
-    <form action="/logout" method="post"><button>Logout</button></form>
-</div>
+<nav class="navbar">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <h2>FINANCE.<span>OS</span></h2>
+        <span class="badge" style="background: rgba(129, 140, 248, 0.1); color: var(--accent-secondary);">Analyst Access</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <span style="color: var(--text-secondary); font-size: 0.875rem;" sec:authentication="name">User</span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="secondary">Logout</button>
+        </form>
+    </div>
+</nav>
 
 <div class="container">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Financial Analysis</h1>
+        <p style="color: var(--text-secondary);">Analyze trends and filter through financial records.</p>
+    </header>
 
-    <div class="card">
-        <h3>Filter Records</h3>
-        <input id="startDate" type="date">
-        <input id="endDate" type="date">
-
-        <select id="filterType">
-            <option value="">ALL</option>
-            <option value="INCOME">INCOME</option>
-            <option value="EXPENSE">EXPENSE</option>
-        </select>
-
-        <button onclick="filterRecords()">Search</button>
+    <!-- Summary Grid -->
+    <div class="grid" style="margin-bottom: 2.5rem;">
+        <div class="card stat-card">
+            <span class="stat-label">Net Balance</span>
+            <div class="stat-value" id="balance">$0.00</div>
+        </div>
+        <div class="card stat-card">
+            <span class="stat-label">Total Income</span>
+            <div class="stat-value" id="income" style="color: var(--success);">$0.00</div>
+        </div>
+        <div class="card stat-card">
+            <span class="stat-label">Total Expenses</span>
+            <div class="stat-value" id="expense" style="color: var(--danger);">$0.00</div>
+        </div>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th><th>Amount</th><th>Type</th><th>Category</th><th>Date</th>
-        </tr>
-        </thead>
-        <tbody id="table"></tbody>
-    </table>
+    <!-- Filters Section -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem;">Data Filters</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Record Type</label>
+                <select id="filterType" style="margin-bottom: 0;">
+                    <option value="">All Types</option>
+                    <option value="INCOME">Income</option>
+                    <option value="EXPENSE">Expense</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Category</label>
+                <select id="filterCategory" style="margin-bottom: 0;">
+                    <option value="">All Categories</option>
+                    <option value="SALARY">Salary</option>
+                    <option value="INVESTMENT">Investment</option>
+                    <option value="FOOD">Food</option>
+                    <option value="TRANSPORTATION">Transportation</option>
+                    <option value="ENTERTAINMENT">Entertainment</option>
+                    <option value="UTILITIES">Utilities</option>
+                    <option value="HEALTHCARE">Healthcare</option>
+                    <option value="EDUCATION">Education</option>
+                    <option value="OTHER">Other</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Start Date</label>
+                <input type="date" id="startDate" style="margin-bottom: 0;">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">End Date</label>
+                <input type="date" id="endDate" style="margin-bottom: 0;">
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button onclick="applyFilters()" style="flex: 1;">Apply</button>
+                <button onclick="resetFilters()" class="secondary">Reset</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Records Table -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 600;">Financial Records</h3>
+            <span id="record-count" style="font-size: 0.875rem; color: var(--text-secondary);">0 records found</span>
+        </div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th style="text-align: right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="records-table">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<script src="/js/analyst.js"></script>
+<script th:src="@{/js/analyst.js}"></script>
 </body>
 </html>
