@@ -126,29 +126,95 @@
         </div>
     </div>
 
-    <!-- Users Section (Hidden by default) -->
+    <!-- Users Section -->
     <div id="section-users" style="display: none;">
         <div class="card">
             <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">System Users</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th style="text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="users-table">
-                    <!-- Loaded via JS -->
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    </div> <!-- end container -->
 
-<script th:src="@{/js/admin.js}"></script>
+    <!-- Edit Record Modal -->
+    <div id="modal-edit-record" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem; font-weight: 700;">Edit Transaction</h3>
+                <button onclick="closeModal('modal-edit-record')" class="modal-close">&times;</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <input type="hidden" id="edit-record-id">
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Amount</label>
+                <input type="number" id="edit-amount" placeholder="0.00">
+                
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Type</label>
+                <select id="edit-type">
+                    <option value="INCOME">Income</option>
+                    <option value="EXPENSE">Expense</option>
+                </select>
+
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Category</label>
+                <select id="edit-category">
+                    <option value="SALARY">Salary</option>
+                    <option value="INVESTMENT">Investment</option>
+                    <option value="FOOD">Food</option>
+                    <option value="TRANSPORTATION">Transportation</option>
+                    <option value="UTILITIES">Utilities</option>
+                    <option value="OTHER">Other</option>
+                </select>
+
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Date</label>
+                <input type="date" id="edit-date">
+
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Description</label>
+                <input type="text" id="edit-description" placeholder="Description">
+
+                <button onclick="updateRecord()" style="margin-top: 1rem;">Update Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="modal-edit-user" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem; font-weight: 700;">Edit User</h3>
+                <button onclick="closeModal('modal-edit-user')" class="modal-close">&times;</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <input type="hidden" id="edit-user-id">
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Name</label>
+                <input type="text" id="edit-user-name" placeholder="Full Name">
+                
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Email</label>
+                <input type="email" id="edit-user-email" placeholder="Email Address">
+
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Password</label>
+                <input type="password" id="edit-user-password" placeholder="New Password (min 6 chars)">
+
+                <button onclick="updateUser()" style="margin-top: 1rem;">Update User</button>
+            </div>
+        </div>
+    </div>
+
+
+<script th:src="@{/js/admin.js?v=2}"></script>
+
 </body>
 </html>

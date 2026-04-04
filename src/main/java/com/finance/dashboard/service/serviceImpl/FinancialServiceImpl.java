@@ -42,12 +42,21 @@ public class FinancialServiceImpl implements FinancialService {
         FinancialRecord record = financialRecordRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Record not found with id: " + id));
 
-        record.setAmount(updatedRecord.getAmount());
-        record.setType(updatedRecord.getType());
-        record.setCategory(updatedRecord.getCategory());
-        record.setAmount(updatedRecord.getAmount());
-        record.setDate(updatedRecord.getDate());
-        record.setDescription(updatedRecord.getDescription());
+        if (updatedRecord.getAmount() != null) {
+            record.setAmount(updatedRecord.getAmount());
+        }
+        if (updatedRecord.getType() != null) {
+            record.setType(updatedRecord.getType());
+        }
+        if (updatedRecord.getCategory() != null) {
+            record.setCategory(updatedRecord.getCategory());
+        }
+        if (updatedRecord.getDate() != null) {
+            record.setDate(updatedRecord.getDate());
+        }
+        if (updatedRecord.getDescription() != null) {
+            record.setDescription(updatedRecord.getDescription());
+        }
 
         return financialRecordRepository.save(record);
     }
