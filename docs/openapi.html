@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard API Documentation</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    </style>
+</head>
+<body>
+<div id="redoc-container"></div>
+<script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+
+<script>
+    const openApiSpec = `
+openapi: 3.0.3
+info:
+title: Finance Dashboard API
+description: Backend APIs for managing financial records, users, and dashboard analytics.
+version: 1.0.0
+
+servers:
+- url: http://localhost:8080
+description: Local server
+
+tags:
+- name: Dashboard
+- name: Financial Records
+- name: Users
+
+paths:
+/dashboard/summary:
+get:
+  tags: [Dashboard]
+  summary: Get overall financial summary
+  responses:
+    '200':
+      description: Summary fetched successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SummaryResponse'
+
+/dashboard/category-total:
+get:
+  tags: [Dashboard]
+  summary: Get category-wise totals
+  responses:
+    '200':
+      description: Category totals
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CategoryResponse'
+
+/dashboard/monthly-trends:
+get:
+  tags: [Dashboard]
+  summary: Get monthly trends
+  responses:
+    '200':
+      description: Monthly trends
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/MonthlyTrendResponse'
+
+/dashboard/recent-activity:
+get:
+  tags: [Dashboard]
+  summary: Get recent financial activity
+  responses:
+    '200':
+      description: Recent activity
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RecentActivityResponse'
+
+/records/create:
+post:
+  tags: [Financial Records]
+  summary: Create financial record
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/FinancialRecordRequest'
+  responses:
+    '201':
+      description: Record created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FinancialRecord'
+
+/records/filter:
+get:
+  tags: [Financial Records]
+  summary: Filter financial records
+  parameters:
+    - name: type
+      in: query
+      schema:
+        $ref: '#/components/schemas/RecordType'
+    - name: category
+      in: query
+      schema:
+        $ref: '#/components/schemas/Category'
+    - name: startDate
+      in: query
+      schema:
+        type: string
+        format: date
+    - name: endDate
+      in: query
+      schema:
+        type: string
+        format: date
+  responses:
+    '200':
+      description: Filtered records
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FinancialRecord'
+
+/records/all:
+get:
+  tags: [Financial Records]
+  summary: Get all records
+  responses:
+    '200':
+      description: List of records
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FinancialRecord'
+
+/records/{id}:
+get:
+  tags: [Financial Records]
+  summary: Get record by ID
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Record found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FinancialRecord'
+
+/records/update/{id}:
+put:
+  tags: [Financial Records]
+  summary: Update record
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/FinancialRecordRequest'
+  responses:
+    '200':
+      description: Updated record
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FinancialRecord'
+
+/records/delete/{id}:
+delete:
+  tags: [Financial Records]
+  summary: Delete record
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Record deleted
+
+/user/create:
+post:
+  tags: [Users]
+  summary: Create user
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UserRequest'
+  responses:
+    '201':
+      description: User created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+/user/all:
+get:
+  tags: [Users]
+  summary: Get all users
+  responses:
+    '200':
+      description: List of users
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+
+/user/{id}:
+get:
+  tags: [Users]
+  summary: Get user by ID
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: User found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+/user/update/{id}:
+put:
+  tags: [Users]
+  summary: Update user
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UserRequest'
+  responses:
+    '200':
+      description: Updated user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+/user/delete/{id}:
+delete:
+  tags: [Users]
+  summary: Delete user
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: User deleted
+
+components:
+schemas:
+SummaryResponse:
+  type: object
+  properties:
+    totalIncome:
+      type: number
+    totalExpense:
+      type: number
+    netBalance:
+      type: number
+
+CategoryResponse:
+  type: object
+  properties:
+    category:
+      $ref: '#/components/schemas/Category'
+    total:
+      type: number
+
+MonthlyTrendResponse:
+  type: object
+  properties:
+    month:
+      type: string
+    income:
+      type: number
+    expense:
+      type: number
+
+RecentActivityResponse:
+  type: object
+  properties:
+    description:
+      type: string
+    amount:
+      type: number
+    date:
+      type: string
+      format: date
+
+FinancialRecordRequest:
+  type: object
+  required: [amount, type, category, date]
+  properties:
+    amount:
+      type: number
+    type:
+      $ref: '#/components/schemas/RecordType'
+    category:
+      $ref: '#/components/schemas/Category'
+    description:
+      type: string
+    date:
+      type: string
+      format: date
+
+FinancialRecord:
+  allOf:
+    - $ref: '#/components/schemas/FinancialRecordRequest'
+    - type: object
+      properties:
+        id:
+          type: integer
+
+UserRequest:
+  type: object
+  required: [name, email, password, role, status]
+  properties:
+    name:
+      type: string
+    email:
+      type: string
+    password:
+      type: string
+    role:
+      $ref: '#/components/schemas/UserRole'
+    status:
+      $ref: '#/components/schemas/UserStatus'
+
+User:
+  allOf:
+    - $ref: '#/components/schemas/UserRequest'
+    - type: object
+      properties:
+        id:
+          type: integer
+
+RecordType:
+  type: string
+  enum: [INCOME, EXPENSE]
+
+Category:
+  type: string
+  enum: [FOOD, TRAVEL, SHOPPING, BILLS, OTHER]
+
+UserRole:
+  type: string
+  enum: [ADMIN, USER, MODERATOR]
+
+UserStatus:
+  type: string
+  enum: [ACTIVE, INACTIVE, SUSPENDED]
+    `;
+
+    Redoc.init(openApiSpec, {
+        scrollYOffset: 50,
+        theme: { colors: { primary: { main: '#2563eb' } } }
+    }, document.getElementById('redoc-container'));
+</script>
+</body>
+</html>
