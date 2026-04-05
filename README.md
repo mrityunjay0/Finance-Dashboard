@@ -1,7 +1,14 @@
-<h1 align="center">FINANCE.OS</h1>
+<h1 align="center"> FINANCE.OS </h1>
 
 <p align="center">
-  <strong>A Premium, Role-Based Financial Management Dashboard built with Spring Boot</strong>
+  <strong>A Premium, Role-Based Financial Management Ecosystem built with Spring Boot</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk" alt="Java">
+  <img src="https://img.shields.io/badge/Spring_Boot-4.0.5-brightgreen?style=for-the-badge&logo=springboot" alt="Spring Boot">
+  <img src="https://img.shields.io/badge/MySQL-8.0-blue?style=for-the-badge&logo=mysql" alt="MySQL">
+  <img src="https://img.shields.io/badge/Interface-Glassmorphism-purple?style=for-the-badge" alt="UI Style">
 </p>
 
 ---
@@ -16,7 +23,6 @@
 7. [Screenshots & UI Design](#-screenshots--ui-design)
 
 ---
-
 ## 🎯 Project Overview
 
 **FINANCE.OS** is a full-stack, enterprise-grade financial management system. It is designed to provide secure, real-time insights into system-wide or personal financial health. Rather than relying on heavy Single Page Application (SPA) frameworks like React or Angular, this project demonstrates how to build a highly responsive, modern, and beautiful "glassmorphic" interface using purely **Vanilla HTML/CSS/JS** paired with the power of **Spring Boot** and **Thymeleaf**.
@@ -24,10 +30,33 @@
 The core architecture strictly enforces **Role-Based Access Control (RBAC)** across both the frontend navigation and backend API controllers, ensuring data security and proper visual abstraction.
 
 ---
+## 📡 API Documentation
+
+Interactive API documentation is available here:
+
+👉 https://mrityunjay0.github.io/Finance-Dashboard/
+
+**Includes:**
+- Endpoint definitions
+- Request/Response schemas
+- Sample payloads
+- Status codes
+
+---
 
 ## 🔐 Key Features by Role
 
-The platform supports three distinct user roles. Upon successful login, the system automatically routes the user to their designated dashboard.
+The platform implements a strict **Role-Based Access Control (RBAC)** model. Users are intelligently routed to specialized dashboards upon authentication.
+
+| Feature | 🛡️ Admin | 📈 Analyst | 👁️ Viewer |
+| :--- | :---: | :---: | :---: |
+| Full CRUD (Transactions/Users) | ✅ | ❌ | ❌ |
+| Advanced Data Filtering | ✅ | ✅ | ❌ |
+| Monthly Trends & Analytics | ✅ | ✅ | ✅ |
+| System Summaries | ✅ | ✅ | ✅ |
+| User Access Management | ✅ | ❌ | ❌ |
+
+### Role Deep-Dive
 
 ### 🛡️ Administrator (`ADMIN`)
 The master account type with unrestricted access to system configurations and raw data.
@@ -137,7 +166,7 @@ The system relies strongly on a REST approach for asynchronous UI updates. Note:
 
 ### `RecordController` (Financial Management)
 - `POST /records/create`: Register a new transaction. *(Admin)*
-- `GET /records/{id}`: Fetch specific transaction details. *(All)*
+- `GET /records/{id}`: Fetch specific transaction details. *(Admin, Analyst)*
 - `GET /records/filter`: Search records using Query Params (`?type=...&category=...`). *(Analyst, Admin)*
 - `PUT /records/update/{id}`: Partially update a transaction's fields. *(Admin)*
 - `DELETE /records/delete/{id}`: Permanently remove a record. *(Admin)*
