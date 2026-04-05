@@ -18,6 +18,7 @@ paths:
     get:
       tags: [Dashboard]
       summary: Get overall financial summary
+      description: Retrieves the high-level financial overview for the dashboard, including total aggregated income, total expenses, and the net calculated balance across all recorded data.
       responses:
         '200':
           description: Summary fetched successfully
@@ -30,6 +31,7 @@ paths:
     get:
       tags: [Dashboard]
       summary: Get category-wise totals
+      description: Aggregates all financial records and groups them by category to provide a detailed breakdown of income and expenses per category. Highly useful for generating categorical split charts.
       responses:
         '200':
           description: Category totals
@@ -44,6 +46,7 @@ paths:
     get:
       tags: [Dashboard]
       summary: Get monthly trends
+      description: Computes financial trends over elapsed time, providing a month-by-month breakdown of cash flow (income vs. expense) for the current view. Essential for recognizing tracking patterns.
       responses:
         '200':
           description: Monthly trends
@@ -58,6 +61,7 @@ paths:
     get:
       tags: [Dashboard]
       summary: Get recent financial activity
+      description: Fetches a chronologically ordered list of the most recent financial transactions. Typically utilized to populate the recent activity feed on the main dashboard user interface.
       responses:
         '200':
           description: Recent activity
@@ -72,6 +76,7 @@ paths:
     post:
       tags: [Financial Records]
       summary: Create financial record
+      description: Records a new financial transaction into the ledger. Requires a valid monetary amount, classification (INCOME/EXPENSE), a functional category, and a valid transaction date timestamp.
       requestBody:
         required: true
         content:
@@ -90,6 +95,7 @@ paths:
     get:
       tags: [Financial Records]
       summary: Filter financial records
+      description: Retrieves a tailored dataset of financial records based on optional query parameters. Supports multi-faceted filtering by transaction type, category, and date boundaries for analytical purposes.
       parameters:
         - name: type
           in: query
@@ -123,6 +129,7 @@ paths:
     get:
       tags: [Financial Records]
       summary: Get all records
+      description: Returns an unfiltered, exhaustive ledger of all financial transactions stored within the active system. Note that this may return a substantially large dataset in extensive setups.
       responses:
         '200':
           description: List of records
@@ -137,6 +144,7 @@ paths:
     get:
       tags: [Financial Records]
       summary: Get record by ID
+      description: Retrieves the complete structural details of a specific financial record by its unique system identifier. Returns a 404 response if the requested record does not exist.
       parameters:
         - name: id
           in: path
@@ -155,6 +163,7 @@ paths:
     put:
       tags: [Financial Records]
       summary: Update record
+      description: Modifies an existing financial transaction. All payload fields are strictly required and will completely overwrite the existing data stored against the specified record ID.
       parameters:
         - name: id
           in: path
@@ -179,6 +188,7 @@ paths:
     delete:
       tags: [Financial Records]
       summary: Delete record
+      description: Permanently executes the removal of a financial record from the ledger based on its ID. This action is irreversible and immediately propagates to dashboard analytics calculations.
       parameters:
         - name: id
           in: path
@@ -193,6 +203,7 @@ paths:
     post:
       tags: [Users]
       summary: Create user
+      description: Provisions a new secure user identity within the system. Newly created profiles are assigned a default role (VIEWER) and must be supplied with valid credential mappings.
       requestBody:
         required: true
         content:
@@ -211,6 +222,7 @@ paths:
     get:
       tags: [Users]
       summary: Get all users
+      description: Retrieves a comprehensive directory dictionary of all registered users in the system, including their systemic role and operative status. Primarily intended for administrative auditing layers.
       responses:
         '200':
           description: List of users
@@ -225,6 +237,7 @@ paths:
     get:
       tags: [Users]
       summary: Get user by ID
+      description: Fetches full administrative profile metadata for a specific user identity corresponding to their unique assigned system ID integer.
       parameters:
         - name: id
           in: path
@@ -243,6 +256,7 @@ paths:
     put:
       tags: [Users]
       summary: Update user
+      description: Modifies the profile or operational status of an active user. Typically engaged by system administrators to toggle account access (ACTIVE/INACTIVE) or alter core identity properties.
       parameters:
         - name: id
           in: path
@@ -267,6 +281,7 @@ paths:
     delete:
       tags: [Users]
       summary: Delete user
+      description: Permanently purges a registered user record from the authentication system tables, synchronously revoking their architectural access privileges to the dashboard API.
       parameters:
         - name: id
           in: path
