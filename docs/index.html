@@ -3,489 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard API | Documentation</title>
+    <title>Finance Dashboard API</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        /* Custom CSS Overrides */
+        /* ===== GLOBAL ===== */
         body {
             margin: 0;
-            padding: 0;
+            background: #020617;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Customize the scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 14px 24px;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(10px);
+            color: #e2e8f0;
+            font-weight: 600;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        /* ===== CONTAINER OFFSET ===== */
+        #redoc-container {
+            margin-top: 60px;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #334155;
+            border-radius: 10px;
         }
 
-        /* Refine typography and spacing */
-        .redoc-wrap {
-            font-family: 'Inter', sans-serif !important;
+        /* ===== SIDEBAR ===== */
+        .menu-content {
+            background: linear-gradient(180deg, #020617, #0f172a) !important;
         }
+
+        .menu-content a {
+            color: #94a3b8 !important;
+            transition: 0.2s ease;
+        }
+
+        .menu-content a:hover {
+            color: #38bdf8 !important;
+            transform: translateX(4px);
+        }
+
+        /* ===== ACTIVE MENU ===== */
+        .menu-content .active {
+            color: #22c55e !important;
+            font-weight: 600;
+        }
+
+        /* ===== HEADINGS ===== */
+        h1, h2, h3 {
+            color: #e2e8f0 !important;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .api-content {
+            background: #020617 !important;
+        }
+
+        /* ===== CODE ===== */
         code {
-            font-family: 'Fira+Code', monospace !important;
-            font-size: 0.9em !important;
+            font-family: 'Fira Code', monospace !important;
+            background: rgba(148, 163, 184, 0.1);
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+
+        /* ===== RESPONSE BLOCK ===== */
+        .response {
+            border-radius: 12px !important;
+        }
+
+        /* ===== TAG BADGES ===== */
+        .operation-type {
+            border-radius: 20px !important;
+            padding: 4px 10px !important;
         }
     </style>
 </head>
 <body>
+
+<div class="header">
+    🚀 Finance Dashboard API Documentation
+</div>
+
 <div id="redoc-container"></div>
 
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 
 <script>
-    const openApiSpec = `
-openapi: 3.0.3
-info:
-title: Finance Dashboard API
-description: |
-## Overview
-Welcome to the Finance Dashboard Backend API. Use these endpoints to manage users, track financial records, and generate dashboard analytics.
-
-### Authentication
-*Currently, this API is in development (Local Server).*
-version: 1.0.0
-
-servers:
-- url: http://localhost:8080
-description: Local Development Server
-
-tags:
-- name: Dashboard
-description: Analytics and summary data for the main view.
-- name: Financial Records
-description: CRUD operations for income and expense tracking.
-- name: Users
-description: User management and profile settings.
-
-paths:
-/dashboard/summary:
-get:
-  tags: [Dashboard]
-  summary: Get overall financial summary
-  responses:
-    '200':
-      description: Summary fetched successfully
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SummaryResponse'
-
-/dashboard/category-total:
-get:
-  tags: [Dashboard]
-  summary: Get category-wise totals
-  responses:
-    '200':
-      description: Category totals
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/CategoryResponse'
-
-/dashboard/monthly-trends:
-get:
-  tags: [Dashboard]
-  summary: Get monthly trends
-  responses:
-    '200':
-      description: Monthly trends
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/MonthlyTrendResponse'
-
-/dashboard/recent-activity:
-get:
-  tags: [Dashboard]
-  summary: Get recent financial activity
-  responses:
-    '200':
-      description: Recent activity
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/RecentActivityResponse'
-
-/records/create:
-post:
-  tags: [Financial Records]
-  summary: Create financial record
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/FinancialRecordRequest'
-  responses:
-    '201':
-      description: Record created
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FinancialRecord'
-
-/records/filter:
-get:
-  tags: [Financial Records]
-  summary: Filter financial records
-  parameters:
-    - name: type
-      in: query
-      schema:
-        $ref: '#/components/schemas/RecordType'
-    - name: category
-      in: query
-      schema:
-        $ref: '#/components/schemas/Category'
-    - name: startDate
-      in: query
-      schema:
-        type: string
-        format: date
-    - name: endDate
-      in: query
-      schema:
-        type: string
-        format: date
-  responses:
-    '200':
-      description: Filtered records
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/FinancialRecord'
-
-/records/all:
-get:
-  tags: [Financial Records]
-  summary: Get all records
-  responses:
-    '200':
-      description: List of records
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/FinancialRecord'
-
-/records/{id}:
-get:
-  tags: [Financial Records]
-  summary: Get record by ID
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  responses:
-    '200':
-      description: Record found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FinancialRecord'
-
-/records/update/{id}:
-put:
-  tags: [Financial Records]
-  summary: Update record
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/FinancialRecordRequest'
-  responses:
-    '200':
-      description: Updated record
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FinancialRecord'
-
-/records/delete/{id}:
-delete:
-  tags: [Financial Records]
-  summary: Delete record
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  responses:
-    '200':
-      description: Record deleted
-
-/user/create:
-post:
-  tags: [Users]
-  summary: Create user
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/UserRequest'
-  responses:
-    '201':
-      description: User created
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-
-/user/all:
-get:
-  tags: [Users]
-  summary: Get all users
-  responses:
-    '200':
-      description: List of users
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-
-/user/{id}:
-get:
-  tags: [Users]
-  summary: Get user by ID
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  responses:
-    '200':
-      description: User found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-
-/user/update/{id}:
-put:
-  tags: [Users]
-  summary: Update user
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '#/components/schemas/UserRequest'
-  responses:
-    '200':
-      description: Updated user
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-
-/user/delete/{id}:
-delete:
-  tags: [Users]
-  summary: Delete user
-  parameters:
-    - name: id
-      in: path
-      required: true
-      schema:
-        type: integer
-  responses:
-    '200':
-      description: User deleted
-
-components:
-schemas:
-SummaryResponse:
-  type: object
-  properties:
-    totalIncome:
-      type: number
-    totalExpense:
-      type: number
-    netBalance:
-      type: number
-
-CategoryResponse:
-  type: object
-  properties:
-    category:
-      $ref: '#/components/schemas/Category'
-    total:
-      type: number
-
-MonthlyTrendResponse:
-  type: object
-  properties:
-    month:
-      type: string
-    income:
-      type: number
-    expense:
-      type: number
-
-RecentActivityResponse:
-  type: object
-  properties:
-    description:
-      type: string
-    amount:
-      type: number
-    date:
-      type: string
-      format: date
-
-FinancialRecordRequest:
-  type: object
-  required: [amount, type, category, date]
-  properties:
-    amount:
-      type: number
-    type:
-      $ref: '#/components/schemas/RecordType'
-    category:
-      $ref: '#/components/schemas/Category'
-    description:
-      type: string
-    date:
-      type: string
-      format: date
-
-FinancialRecord:
-  allOf:
-    - $ref: '#/components/schemas/FinancialRecordRequest'
-    - type: object
-      properties:
-        id:
-          type: integer
-
-UserRequest:
-  type: object
-  required: [name, email, password, role, status]
-  properties:
-    name:
-      type: string
-    email:
-      type: string
-    password:
-      type: string
-    role:
-      $ref: '#/components/schemas/UserRole'
-    status:
-      $ref: '#/components/schemas/UserStatus'
-
-User:
-  allOf:
-    - $ref: '#/components/schemas/UserRequest'
-    - type: object
-      properties:
-        id:
-          type: integer
-
-RecordType:
-  type: string
-  enum: [INCOME, EXPENSE]
-
-Category:
-  type: string
-  enum: [FOOD, TRAVEL, SHOPPING, BILLS, OTHER]
-
-UserRole:
-  type: string
-  enum: [ADMIN, USER, MODERATOR]
-
-UserStatus:
-  type: string
-  enum: [ACTIVE, INACTIVE, SUSPENDED]
-    `;
-
-    Redoc.init(openApiSpec, {
-        scrollYOffset: 50,
+    Redoc.init('./openapi.yaml', {
+        scrollYOffset: 60,
         hideDownloadButton: false,
-        // --- CUSTOM DESIGN CONFIGURATION ---
+
         theme: {
             colors: {
                 primary: {
-                    main: '#0f172a' // Dark Navy for headings
+                    main: '#38bdf8'
                 },
                 success: {
-                    main: '#10b981' // Vibrant green for 200 OK
+                    main: '#22c55e'
                 },
-                info: {
-                    main: '#3b82f6' // Blue for GET requests
+                error: {
+                    main: '#ef4444'
                 },
                 warning: {
-                    main: '#f59e0b' // Orange for Warning
-                },
-                responses: {
-                    success: {
-                        color: '#059669',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)'
-                    }
+                    main: '#f59e0b'
                 }
             },
             typography: {
                 fontSize: '15px',
-                lineHeight: '1.6',
                 fontFamily: 'Inter, sans-serif',
-                headings: {
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: '600'
-                },
                 code: {
-                    fontFamily: 'Fira Code, monospace',
-                    backgroundColor: '#f8fafc'
+                    fontFamily: 'Fira Code, monospace'
                 }
             },
             sidebar: {
-                width: '260px',
-                backgroundColor: '#f8fafc',
-                textColor: '#475569'
+                backgroundColor: '#020617',
+                textColor: '#94a3b8'
             },
             rightPanel: {
-                backgroundColor: '#1e293b', // Dark slate for the code panel
-                textColor: '#f8fafc'
+                backgroundColor: '#020617',
+                textColor: '#e2e8f0'
             }
         }
     }, document.getElementById('redoc-container'));
 </script>
+
 </body>
 </html>
