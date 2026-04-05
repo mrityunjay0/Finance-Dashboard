@@ -3,14 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard API Documentation</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <title>Finance Dashboard API | Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Custom CSS Overrides */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Customize the scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Refine typography and spacing */
+        .redoc-wrap {
+            font-family: 'Inter', sans-serif !important;
+        }
+        code {
+            font-family: 'Fira+Code', monospace !important;
+            font-size: 0.9em !important;
+        }
     </style>
 </head>
 <body>
 <div id="redoc-container"></div>
+
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 
 <script>
@@ -18,17 +48,25 @@
 openapi: 3.0.3
 info:
 title: Finance Dashboard API
-description: Backend APIs for managing financial records, users, and dashboard analytics.
+description: |
+## Overview
+Welcome to the Finance Dashboard Backend API. Use these endpoints to manage users, track financial records, and generate dashboard analytics.
+
+### Authentication
+*Currently, this API is in development (Local Server).*
 version: 1.0.0
 
 servers:
 - url: http://localhost:8080
-description: Local server
+description: Local Development Server
 
 tags:
 - name: Dashboard
+description: Analytics and summary data for the main view.
 - name: Financial Records
+description: CRUD operations for income and expense tracking.
 - name: Users
+description: User management and profile settings.
 
 paths:
 /dashboard/summary:
@@ -401,7 +439,52 @@ UserStatus:
 
     Redoc.init(openApiSpec, {
         scrollYOffset: 50,
-        theme: { colors: { primary: { main: '#2563eb' } } }
+        hideDownloadButton: false,
+        // --- CUSTOM DESIGN CONFIGURATION ---
+        theme: {
+            colors: {
+                primary: {
+                    main: '#0f172a' // Dark Navy for headings
+                },
+                success: {
+                    main: '#10b981' // Vibrant green for 200 OK
+                },
+                info: {
+                    main: '#3b82f6' // Blue for GET requests
+                },
+                warning: {
+                    main: '#f59e0b' // Orange for Warning
+                },
+                responses: {
+                    success: {
+                        color: '#059669',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                    }
+                }
+            },
+            typography: {
+                fontSize: '15px',
+                lineHeight: '1.6',
+                fontFamily: 'Inter, sans-serif',
+                headings: {
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: '600'
+                },
+                code: {
+                    fontFamily: 'Fira Code, monospace',
+                    backgroundColor: '#f8fafc'
+                }
+            },
+            sidebar: {
+                width: '260px',
+                backgroundColor: '#f8fafc',
+                textColor: '#475569'
+            },
+            rightPanel: {
+                backgroundColor: '#1e293b', // Dark slate for the code panel
+                textColor: '#f8fafc'
+            }
+        }
     }, document.getElementById('redoc-container'));
 </script>
 </body>
