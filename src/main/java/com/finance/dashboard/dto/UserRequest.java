@@ -3,6 +3,7 @@ package com.finance.dashboard.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.finance.dashboard.enums.Status;
 
 public class UserRequest {
 
@@ -16,6 +17,8 @@ public class UserRequest {
     @NotBlank(message = "Password is required.")
     @Size(min = 6, message = "Password must be at least 6 characters long.")
     private String password;
+
+    private Status status;
 
     public UserRequest() {
     }
@@ -48,5 +51,13 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

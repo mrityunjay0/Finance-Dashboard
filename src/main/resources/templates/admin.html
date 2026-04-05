@@ -251,9 +251,15 @@
                 <input type="email" id="edit-user-email" placeholder="Email Address">
 
                 <label style="font-size: 0.75rem; color: var(--text-secondary);">Password</label>
-                <input type="password" id="edit-user-password" placeholder="New Password (min 6 chars)">
+                <input type="password" id="edit-user-password" placeholder="New Password (min 6 chars)" style="margin-bottom: 0.5rem;">
 
-                <button onclick="updateUser()" style="margin-top: 1rem;">Update User</button>
+                <label style="font-size: 0.75rem; color: var(--text-secondary);">Status</label>
+                <select id="edit-user-status" style="margin-bottom: 1rem;">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                </select>
+
+                <button onclick="updateUser()">Update User</button>
             </div>
         </div>
     </div>

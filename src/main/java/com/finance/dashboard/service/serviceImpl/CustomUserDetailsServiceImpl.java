@@ -27,6 +27,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().name())
+                .disabled(user.getStatus() == com.finance.dashboard.enums.Status.INACTIVE)
                 .build();
     }
 }

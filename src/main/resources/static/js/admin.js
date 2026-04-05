@@ -312,6 +312,7 @@ async function editUser(id) {
         document.getElementById("edit-user-name").value = user.name;
         document.getElementById("edit-user-email").value = user.email;
         document.getElementById("edit-user-password").value = "";
+        document.getElementById("edit-user-status").value = user.status || "ACTIVE";
         openModal("modal-edit-user");
     } catch (e) {}
 }
@@ -321,7 +322,8 @@ async function updateUser() {
     const user = {
         name: document.getElementById("edit-user-name").value,
         email: document.getElementById("edit-user-email").value,
-        password: document.getElementById("edit-user-password").value
+        password: document.getElementById("edit-user-password").value,
+        status: document.getElementById("edit-user-status").value
     };
     try {
         await fetch(`/user/update/${id}`, {
