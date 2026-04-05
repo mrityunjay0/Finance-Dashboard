@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance Dashboard API</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
 
     <style>
-        /* ===== GLOBAL ===== */
+        /* ===== GLOBAL DARK THEME ===== */
         body {
             margin: 0;
-            background: #020617;
+            background: #0f172a;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.1) 0px, transparent 50%);
             font-family: 'Inter', sans-serif;
+            color: #f8fafc;
         }
 
         /* ===== HEADER ===== */
@@ -20,128 +27,299 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 14px 24px;
-            background: rgba(2, 6, 23, 0.85);
-            backdrop-filter: blur(10px);
-            color: #e2e8f0;
-            font-weight: 600;
+            padding: 16px 32px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 1.15rem;
             z-index: 1000;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* ===== CONTAINER OFFSET ===== */
+        .header .logo {
+            font-size: 1.25rem;
+            margin-right: 12px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header .title {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
         #redoc-container {
             margin-top: 60px;
         }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
+            height: 8px;
         }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         ::-webkit-scrollbar-thumb {
             background: #334155;
-            border-radius: 10px;
+            border-radius: 999px;
         }
 
-        /* ===== SIDEBAR ===== */
-        .menu-content {
-            background: linear-gradient(180deg, #020617, #0f172a) !important;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
-        .menu-content a {
-            color: #94a3b8 !important;
-            transition: 0.2s ease;
+        /* ===== REDOC DARK OVERRIDES ===== */
+
+        /* Interactive Elements */
+        a {
+            transition: color 0.2s ease;
         }
 
-        .menu-content a:hover {
+        a:hover {
             color: #38bdf8 !important;
-            transform: translateX(4px);
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
         }
 
-        /* ===== ACTIVE MENU ===== */
-        .menu-content .active {
-            color: #22c55e !important;
-            font-weight: 600;
+        div[id^='operation/'] {
+            border-radius: 12px !important;
+            margin-bottom: 2rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            background: rgba(30, 41, 59, 0.4) !important;
+            transition: all 0.3s ease !important;
         }
 
-        /* ===== HEADINGS ===== */
-        h1, h2, h3 {
-            color: #e2e8f0 !important;
+        div[id^='operation/']:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.1) !important;
+            border-color: rgba(56, 189, 248, 0.2) !important;
         }
 
-        /* ===== RIGHT PANEL ===== */
-        .api-content {
-            background: #020617 !important;
+        /* Typography & Background Normalization */
+        .redoc-wrap,
+        .redoc-wrap>div {
+            background: transparent !important;
         }
 
-        /* ===== CODE ===== */
+        .api-content h1,
+        .api-content h2,
+        .api-content h3,
+        .api-content h4,
+        .api-content h5,
+        .api-content p,
+        .api-content li,
+        .api-content label {
+            color: #f8fafc !important;
+        }
+
+        .api-content td,
+        .api-content th {
+            color: #cbd5e1 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .redoc-wrap code span.token {
+            color: inherit !important;
+        }
+
+        /* General Controls: Buttons, Selects, and Tabs */
+        select,
+        option,
+        .redoc-wrap .react-tabs__tab,
+        div[id^='operation/']>div>div:nth-child(1)>div {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        button {
+            background-color: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        select,
+        option {
+            padding: 6px !important;
+            outline: none;
+        }
+
+        button:hover,
+        select:hover {
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Specific Tab Re-styles */
+        .redoc-wrap .react-tabs__tab-list {
+            background: transparent !important;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+            margin: 0 !important;
+            padding: 8px 8px 0 8px !important;
+        }
+
+        .redoc-wrap .react-tabs__tab {
+            color: #94a3b8 !important;
+            border-bottom: none !important;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+        .redoc-wrap .react-tabs__tab--selected {
+            background: rgba(15, 23, 42, 0.9) !important;
+            color: #38bdf8 !important;
+            border-color: rgba(56, 189, 248, 0.4) !important;
+        }
+
+        /* Deep Cleanup of White Boxes */
+        div[id^='operation/']>div>div:nth-child(1),
+        .redoc-wrap span.url,
+        .redoc-wrap div.url {
+            background: transparent !important;
+            color: #38bdf8 !important;
+        }
+
+        /* Inline Code Highlights */
         code {
             font-family: 'Fira Code', monospace !important;
-            background: rgba(148, 163, 184, 0.1);
-            padding: 4px 6px;
+            background: rgba(56, 189, 248, 0.1) !important;
+            color: #38bdf8 !important;
+            padding: 4px 8px;
             border-radius: 6px;
         }
 
-        /* ===== RESPONSE BLOCK ===== */
-        .response {
-            border-radius: 12px !important;
+        code:hover {
+            background: rgba(56, 189, 248, 0.2) !important;
         }
 
-        /* ===== TAG BADGES ===== */
-        .operation-type {
-            border-radius: 20px !important;
-            padding: 4px 10px !important;
+        span[type]:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
         }
     </style>
 </head>
+
 <body>
 
-<div class="header">
-    🚀 Finance Dashboard API Documentation
-</div>
+    <div class="header">
+        <span class="logo">🚀</span> <span class="title">Finance Dashboard API Documentation</span>
+    </div>
 
-<div id="redoc-container"></div>
+    <div id="redoc-container"></div>
 
-<script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 
-<script>
-    Redoc.init('./openapi.yaml', {
-        scrollYOffset: 60,
-        hideDownloadButton: false,
+    <script>
+        Redoc.init('./openapi.yaml', {
+            scrollYOffset: 60,
+            hideDownloadButton: false,
 
-        theme: {
-            colors: {
-                primary: {
-                    main: '#38bdf8'
+            theme: {
+                colors: {
+                    primary: {
+                        main: '#38bdf8'
+                    },
+                    success: {
+                        main: '#10b981'
+                    },
+                    error: {
+                        main: '#ef4444'
+                    },
+                    warning: {
+                        main: '#f59e0b'
+                    },
+                    text: {
+                        primary: '#f8fafc',
+                        secondary: '#94a3b8'
+                    },
+                    border: {
+                        dark: 'rgba(255, 255, 255, 0.1)',
+                        light: 'rgba(255, 255, 255, 0.05)'
+                    },
+                    responses: {
+                        success: {
+                            color: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                        },
+                        error: {
+                            color: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)'
+                        },
+                        info: {
+                            color: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)'
+                        }
+                    },
+                    http: {
+                        get: '#10b981',
+                        post: '#38bdf8',
+                        put: '#f59e0b',
+                        delete: '#ef4444'
+                    }
                 },
-                success: {
-                    main: '#22c55e'
+                schema: {
+                    nestedBackground: '#1e293b'
                 },
-                error: {
-                    main: '#ef4444'
+                typography: {
+                    fontSize: '15px',
+                    fontFamily: 'Inter, sans-serif',
+                    code: {
+                        fontFamily: 'Fira Code, monospace',
+                        wrap: true
+                    },
+                    headings: {
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: '700'
+                    }
                 },
-                warning: {
-                    main: '#f59e0b'
+                sidebar: {
+                    backgroundColor: 'transparent',
+                    textColor: '#94a3b8',
+                    activeTextColor: '#38bdf8'
+                },
+                rightPanel: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+                    textColor: '#e2e8f0',
+                    servers: {
+                        overlay: {
+                            backgroundColor: '#1e293b',
+                            textColor: '#f8fafc'
+                        },
+                        url: {
+                            backgroundColor: '#0f172a'
+                        }
+                    }
                 }
-            },
-            typography: {
-                fontSize: '15px',
-                fontFamily: 'Inter, sans-serif',
-                code: {
-                    fontFamily: 'Fira Code, monospace'
-                }
-            },
-            sidebar: {
-                backgroundColor: '#020617',
-                textColor: '#94a3b8'
-            },
-            rightPanel: {
-                backgroundColor: '#020617',
-                textColor: '#e2e8f0'
             }
-        }
-    }, document.getElementById('redoc-container'));
-</script>
+        }, document.getElementById('redoc-container'));
+    </script>
 
 </body>
+
 </html>

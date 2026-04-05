@@ -294,29 +294,35 @@ components:
       properties:
         category:
           $ref: '#/components/schemas/Category'
-        total:
+        totalIncome:
+          type: number
+        totalExpense:
           type: number
 
     MonthlyTrendResponse:
       type: object
       properties:
         month:
-          type: string
-        income:
+          type: integer
+        totalIncome:
           type: number
-        expense:
+        totalExpense:
           type: number
 
     RecentActivityResponse:
       type: object
       properties:
-        description:
-          type: string
         amount:
           type: number
+        type:
+          $ref: '#/components/schemas/RecordType'
+        category:
+          $ref: '#/components/schemas/Category'
         date:
           type: string
           format: date
+        note:
+          type: string
 
     FinancialRecordRequest:
       type: object
@@ -344,7 +350,7 @@ components:
 
     UserRequest:
       type: object
-      required: [name, email, password, role, status]
+      required: [name, email, password]
       properties:
         name:
           type: string
@@ -352,8 +358,6 @@ components:
           type: string
         password:
           type: string
-        role:
-          $ref: '#/components/schemas/UserRole'
         status:
           $ref: '#/components/schemas/UserStatus'
 
@@ -364,6 +368,8 @@ components:
           properties:
             id:
               type: integer
+            role:
+              $ref: '#/components/schemas/UserRole'
 
     RecordType:
       type: string
@@ -371,12 +377,12 @@ components:
 
     Category:
       type: string
-      enum: [FOOD, TRAVEL, SHOPPING, BILLS, OTHER]
+      enum: [SALARY, INVESTMENT, GIFT, FOOD, TRANSPORTATION, ENTERTAINMENT, UTILITIES, HEALTHCARE, EDUCATION, OTHER]
 
     UserRole:
       type: string
-      enum: [ADMIN, USER, MODERATOR]
+      enum: [VIEWER, ANALYST, ADMIN]
 
     UserStatus:
       type: string
-      enum: [ACTIVE, INACTIVE, SUSPENDED]
+      enum: [ACTIVE, INACTIVE]
